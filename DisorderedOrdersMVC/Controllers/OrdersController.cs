@@ -14,6 +14,25 @@ namespace DisorderedOrdersMVC.Controllers
         {
             _context = context;
         }
+        [Route("/orders/{id:int}")]
+        public IActionResult Show(int id)
+        {
+            var order = _context.Orders
+                .Include(o => o.Customer)
+                .Include(o => o.Items)
+                    .ThenInclude(i => i.Item)
+                .Where(o => o.Id == id).First();
+
+            var total = 0;
+            foreach (var orderItem in order.Items)
+            {
+                var itemPrice = orderItem.Item.Price * orderItem.Quantity;
+                total += itemPrice;
+            }
+            ViewData["total"] = total;
+
+            return View(order);
+        }
 
         public IActionResult New(int customerId)
         {
@@ -22,6 +41,7 @@ namespace DisorderedOrdersMVC.Controllers
 
             return View(products);
         }
+
 
         [HttpPost]
         [Route("/orders")]
@@ -62,6 +82,30 @@ namespace DisorderedOrdersMVC.Controllers
             }
 
             // process payment
+            //IPaymentProcessor processor;
+            //if (paymentType == "bitcoin")
+            //{
+            //    processor = new BitcoinProcessor();
+            //}
+            //else if (paymentType == "paypal")
+            //{
+            //    processor = new PayPalProcessor();
+            //}
+            //else
+            //{
+            //    processor = new CreditCardProcessor();
+            //}
+            var processor = ProcessPaymentType(paymentType);
+            processor.ProcessPayment(total);
+
+            _context.Orders.Add(order);
+            _context.SaveChanges();
+
+            return RedirectToAction("Show", new { id = order.Id});
+        }
+
+        public IPaymentProcessor ProcessPaymentType(string paymentType)
+        {
             IPaymentProcessor processor;
             if (paymentType == "bitcoin")
             {
@@ -75,33 +119,7 @@ namespace DisorderedOrdersMVC.Controllers
             {
                 processor = new CreditCardProcessor();
             }
-
-            processor.ProcessPayment(total);
-
-            _context.Orders.Add(order);
-            _context.SaveChanges();
-
-            return RedirectToAction("Show", new { id = order.Id});
-        }
-
-        [Route("/orders/{id:int}")]
-        public IActionResult Show(int id)
-        {
-            var order = _context.Orders
-                .Include(o => o.Customer)
-                .Include(o => o.Items)
-                    .ThenInclude(i => i.Item)
-                .Where(o => o.Id == id).First();
-
-            var total = 0;
-            foreach (var orderItem in order.Items)
-            {
-                var itemPrice = orderItem.Item.Price * orderItem.Quantity;
-                total += itemPrice;
-            }
-            ViewData["total"] = total;
-
-            return View(order);
+            return processor;
         }
     }
 }
