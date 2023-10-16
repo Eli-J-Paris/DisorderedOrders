@@ -1,6 +1,6 @@
 ﻿namespace DisorderedOrdersMVC.Services
 {
-    public class BitcoinProcessor : IProcessPayment
+    public class BitcoinProcessor : IPaymentProcessor
     {
         public bool ProcessPayment(int amount)
         {

@@ -1,6 +1,6 @@
 ﻿namespace DisorderedOrdersMVC.Services
 {
-    public class CreditCardProcessor : IProcessPayment, IProcessRefund
+    public class CreditCardProcessor : IPaymentProcessor, IProcessRefund
     {
         public bool ProcessPayment(int amount)
         {
