@@ -41,17 +41,18 @@ namespace DisorderedOrdersMVC.Controllers
                     order.Items.Add(orderItem);
                 }
             }
-
+            //moves these chunks into respective classes
             // verify stock available
-            foreach (var orderItem in order.Items)
-            {
-                if (!orderItem.Item.InStock(orderItem.Quantity))
-                {
-                    orderItem.Quantity = orderItem.Item.StockQuantity;
-                }
+            order.VerifyAvaibleStock();
+            //foreach (var orderItem in order.Items)
+            //{
+            //    if (!orderItem.Item.InStock(orderItem.Quantity))
+            //    {
+            //        orderItem.Quantity = orderItem.Item.StockQuantity;
+            //    }
 
-                orderItem.Item.DecreaseStock(orderItem.Quantity);
-            }
+            //    orderItem.Item.DecreaseStock(orderItem.Quantity);
+            //}
 
             // calculate total price
             var total = 0;
