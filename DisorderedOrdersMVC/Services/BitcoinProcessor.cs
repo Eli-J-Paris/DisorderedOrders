@@ -9,9 +9,9 @@
             return true;
         }
 
-        public bool ProcessRefund(int amount)
-        {
-            throw new NotImplementedException("Bitcoin users would never rethink a decision.  Refunding is not necessary.");
-        }
+        //public bool ProcessRefund(int amount)
+        //{
+        //    throw new NotImplementedException("Bitcoin users would never rethink a decision.  Refunding is not necessary.");
+        //}
     }
 }
