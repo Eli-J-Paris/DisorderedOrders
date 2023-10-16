@@ -81,20 +81,6 @@ namespace DisorderedOrdersMVC.Controllers
                 total += itemPrice;
             }
 
-            // process payment
-            //IPaymentProcessor processor;
-            //if (paymentType == "bitcoin")
-            //{
-            //    processor = new BitcoinProcessor();
-            //}
-            //else if (paymentType == "paypal")
-            //{
-            //    processor = new PayPalProcessor();
-            //}
-            //else
-            //{
-            //    processor = new CreditCardProcessor();
-            //}
             var processor = ProcessPaymentType(paymentType);
             processor.ProcessPayment(total);
 
